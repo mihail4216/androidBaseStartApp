@@ -2,14 +2,15 @@ package com.example.mihail.rap.base;
 
 import android.support.annotation.Nullable;
 
-/**
- * Created by mihail on 06.09.17.
- */
 
 public class BasePresenter<VIEW extends ViewBase,ROUTER extends Router> implements Presenter<VIEW,ROUTER> {
 
     private VIEW view;
     private ROUTER router;
+
+    public BasePresenter(){
+
+    }
 
     @Nullable
     @Override

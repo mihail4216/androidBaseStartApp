@@ -2,22 +2,34 @@ package com.example.mihail.rap;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
-/**
- * Created by mihail on 06.09.17.
- */
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKAccessTokenTracker;
+import com.vk.sdk.VKSdk;
+
 
 public class AppStart extends Application{
 
     private static boolean isCoreInit = false;
 
+    VKAccessTokenTracker accessTokenTracker = new VKAccessTokenTracker() {
+        @Override
+        public void onVKAccessTokenChanged(@Nullable VKAccessToken oldToken, @Nullable VKAccessToken newToken) {
+            if(newToken == null){
+            }
+        }
+    };
+
     public static void initCore(Context context){
-      isCoreInit = true;
+        VKSdk.initialize(context);
+        isCoreInit = true;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        accessTokenTracker.startTracking();
         initCore(this);
     }
 }

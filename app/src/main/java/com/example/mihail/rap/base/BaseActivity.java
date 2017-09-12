@@ -16,11 +16,21 @@ public abstract class BaseActivity<PRESENTER extends Presenter> extends AppCompa
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        if(savedInstanceState!=null && savedInstanceState.getSerializable(PRESENTER_TAG)!=null)
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.getSerializable(PRESENTER_TAG) != null)
             presenter = (PRESENTER) savedInstanceState.getSerializable(PRESENTER_TAG);
-        if(presenter!=null)
+        if(presenter == null)
             presenter = createPresenter();
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (presenter == null)
+            presenter = createPresenter();
+        presenter.onSerializable();
+        outState.putSerializable(PRESENTER_TAG,presenter);
     }
 
     @Override
@@ -34,30 +44,25 @@ public abstract class BaseActivity<PRESENTER extends Presenter> extends AppCompa
     protected void onStart() {
         super.onStart();
         onBind();
-        if(presenter!=null)
+        if(presenter != null)
             presenter.onTakeView(this,this);
         onInitListener();
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        presenter.onSerializable();
-        outState.putSerializable(PRESENTER_TAG,presenter);
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(presenter!=null)
+        if(presenter != null)
             presenter.onPause();
 
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(presenter!=null)
+        if(presenter != null)
             presenter.onDestroy();
     }
 
