@@ -75,6 +75,8 @@ public abstract class BaseActivity<PRESENTER extends Presenter> extends AppCompa
 
     @Override
     public PRESENTER getPresenter() {
+        if(presenter == null)
+            presenter = createPresenter();
         return presenter;
     }
 
