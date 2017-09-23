@@ -2,9 +2,11 @@ package com.example.mihail.rap.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.mihail.rap.R;
 import com.example.mihail.rap.base.BaseActivity;
@@ -12,6 +14,8 @@ import com.example.mihail.rap.presenter.main.IMainPresenter;
 import com.example.mihail.rap.presenter.main.MainPresenter;
 import com.example.mihail.rap.router.main.MainRouter;
 import com.example.mihail.rap.view.main.MainView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
@@ -19,35 +23,60 @@ import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 
-import org.json.JSONException;
-
 public class MainActivity extends BaseActivity<IMainPresenter> implements MainView, MainRouter {
 
     private static final String TAG = "MainActivity";
 
-    private TextView text;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
-    private VKRequest requestMyUser, requestMyFriends;
+    private EditText emailTxt;
+    private EditText passwordTxt;
+
+    private Button btnLogin;
+    private Button btnVk;
+    private Button btnRegistration;
+
+    private VKRequest requestMyUser;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getPresenter().login(this);
+//        getPresenter().login(this);
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().isPasswordEdit(requestCode,resultCode,data);
+        getPresenter().isPasswordEdit(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     @Override
     public void onBind() {
-        text = (TextView) findViewById(R.id.helloworld);
-        requestMyUser = VKApi.users().get(VKParameters.from(VKApiConst.VERSION,"5"));
-        requestMyFriends = VKApi.messages().get();
-//        requestMyFriends = VKApi.messages().get(VKParameters.from(VKApiConst.COUNT,25));
+        requestMyUser = VKApi.users().get(VKParameters.from(VKApiConst.VERSION, 5));
+        emailTxt = (EditText) findViewById(R.id.emailText);
+        passwordTxt = (EditText) findViewById(R.id.passwordText);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnRegistration = (Button) findViewById(R.id.btnSingUp);
+        btnVk = (Button) findViewById(R.id.btnLoginWithVk);
 
 
     }
@@ -55,24 +84,7 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
 
     @Override
     public void onInitListener() {
-        requestMyFriends.executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-                super.onComplete(response);
-                try {
-                    getPresenter().getAllFriends(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    
-                }
-            }
 
-            @Override
-            public void onError(VKError error) {
-                super.onError(error);
-                Log.d(TAG, "onError: " + error);
-            }
-        });
         requestMyUser.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -85,12 +97,25 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
                 super.onError(error);
             }
         });
-        text.setOnClickListener(new View.OnClickListener() {
+        btnRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recreate();
+
             }
         });
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btnVk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
     }
 
@@ -100,7 +125,19 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
     }
 
     @Override
-    public void setName(String first_name) {
-        text.setText(first_name);
+    public void singUp() {
+
+    }
+
+    @Override
+    public void login() {
+
+    }
+
+    @Override
+    public void loginWithVk() {
+
     }
 }
+
+

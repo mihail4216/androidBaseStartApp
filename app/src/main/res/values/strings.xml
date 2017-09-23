@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">VkApi</string>
     <integer name="com_vk_sdk_AppId">6052046</integer>
+    <string name="title_activity_registration">Registration</string>
 </resources>

@@ -39,39 +39,6 @@ public class MainPresenter extends BasePresenter<MainView, MainRouter> implement
     public void login(MainActivity mainActivity) {
         if (!VKSdk.isLoggedIn())
             VKSdk.login(mainActivity, myScopeLogin);
-//        final VKRequest request = VKApi.users().get();
-//        request.executeWithListener(new VKRequest.VKRequestListener() {
-//            @Override
-//            public void onComplete(VKResponse response) {
-//                super.onComplete(response);
-//                VKApiUser user = (VKApiUser) response.parsedModel;
-//                String first_name = user.first_name;
-//                getView().setName(first_name);
-//                Log.d(TAG, "onComplete: ");
-////                return user;
-//
-//            }
-//
-//            @Override
-//            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-//                super.attemptFailed(request, attemptNumber, totalAttempts);
-//                Log.d(TAG, "attemptFailed: ");
-//            }
-//
-//            @Override
-//            public void onError(VKError error) {
-//                super.onError(error);
-//                Log.d(TAG, "onError: " + error.toString());
-//            }
-//
-//            @Override
-//            public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
-//                super.onProgress(progressType, bytesLoaded, bytesTotal);
-//                Log.d(TAG, "onProgress: ");
-//            }
-//
-//
-//        });
     }
 
     @Override
@@ -79,6 +46,7 @@ public class MainPresenter extends BasePresenter<MainView, MainRouter> implement
         VKList users = (VKList) response.parsedModel;
         VKApiUserFull user = (VKApiUserFull) users.get(0);
         Log.d(TAG, "onComplete: " + user.first_name);
+
     }
 
     @Override
