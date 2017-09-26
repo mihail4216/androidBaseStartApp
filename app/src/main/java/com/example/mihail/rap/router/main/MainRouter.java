@@ -5,7 +5,7 @@ import com.example.mihail.rap.base.Router;
 
 public interface MainRouter extends Router {
 
-    void singUp();
+    void signUp();
 
     void login();
 

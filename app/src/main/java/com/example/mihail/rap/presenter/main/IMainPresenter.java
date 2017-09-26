@@ -2,6 +2,7 @@ package com.example.mihail.rap.presenter.main;
 
 
 import android.content.Intent;
+import android.view.View;
 
 import com.example.mihail.rap.activity.MainActivity;
 import com.example.mihail.rap.base.Presenter;
@@ -24,4 +25,10 @@ public interface IMainPresenter extends Presenter<MainView,MainRouter> {
     void isPasswordEdit(int requestCode, int resultCode, Intent data);
 
     ArrayList getAllFriends(VKResponse response) throws JSONException;
+
+    void init();
+
+    void signUp(String s, String s1, MainActivity mainActivity);
+
+    void signIn(String s, String s1, MainActivity mainActivity);
 }

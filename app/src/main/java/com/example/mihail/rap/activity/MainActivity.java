@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.mihail.rap.R;
 import com.example.mihail.rap.base.BaseActivity;
@@ -14,6 +15,9 @@ import com.example.mihail.rap.presenter.main.IMainPresenter;
 import com.example.mihail.rap.presenter.main.MainPresenter;
 import com.example.mihail.rap.router.main.MainRouter;
 import com.example.mihail.rap.view.main.MainView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.vk.sdk.api.VKApi;
@@ -45,21 +49,8 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        getPresenter().login(this);
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-                // ...
-            }
-        };
+        getPresenter().init();
+
 
     }
 
@@ -89,7 +80,7 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
             @Override
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
-                getPresenter().getPersonalData(response);
+//                getPresenter().getPersonalData(response);
             }
 
             @Override
@@ -101,11 +92,15 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
             @Override
             public void onClick(View v) {
 
+                getPresenter().signUp(emailTxt.getText().toString(),passwordTxt.getText().toString(),MainActivity.this);
+
+
             }
         });
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getPresenter().signIn(emailTxt.getText().toString(),passwordTxt.getText().toString(),MainActivity.this);
 
             }
         });
@@ -118,6 +113,37 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
 
 
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+//    private void signIn(String email, String pass) {
+//        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if (task.isSuccessful()) Toast.makeText(MainActivity.this,"Successful!!!",Toast.LENGTH_SHORT).show();
+//                else Toast.makeText(MainActivity.this,"Error!!!",Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
+//    private void signUp(String email,String pass){
+//
+//        mAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if (task.isSuccessful()) Toast.makeText(MainActivity.this,"Successful!!!",Toast.LENGTH_SHORT).show();
+//                else Toast.makeText(MainActivity.this,"Error!!!",Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     @Override
     protected MainPresenter createPresenter() {
@@ -125,7 +151,7 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
     }
 
     @Override
-    public void singUp() {
+    public void signUp() {
 
     }
 
@@ -138,6 +164,7 @@ public class MainActivity extends BaseActivity<IMainPresenter> implements MainVi
     public void loginWithVk() {
 
     }
+
 }
 
 
